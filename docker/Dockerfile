@@ -13,7 +13,7 @@ ENV LANG en_US.utf8
 # dev tools
 RUN apt-get update \
     && apt-get install -y build-essential gdb cmake git wget flex texinfo libreadline-dev diffutils bison \
-    && apt-get install -y clang-format vim
+    && apt-get install -y curl clang-format vim
 
 # install openssh
 RUN apt-get install -y openssh-server
@@ -35,6 +35,14 @@ RUN apt-get install -y zsh \
     && echo "export LD_LIBRARY_PATH=/usr/local/lib64:\$LD_LIBRARY_PATH" >> ~/.zshrc
 
 RUN mkdir -p /root/docker/bin && touch /etc/.firstrun
+
+# install nvim v10
+RUN cd /tmp \
+    && curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz \
+    && sudo rm -rf /opt/nvim \
+    && sudo tar -C /opt -xzf nvim-linux64.tar.gz \
+    && echo "export PATH="$PATH:/opt/nvim-linux64/bin"" >> ~/.zshrc \
+    && source ~/.zshrc
 
 # copy starter scripts
 COPY bin/* /root/docker/bin/

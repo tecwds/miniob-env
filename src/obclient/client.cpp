@@ -13,18 +13,17 @@ See the Mulan PSL v2 for more details. */
 //
 
 #include <arpa/inet.h>
-#include <errno.h>
+#include <cerrno>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/un.h>
-#include <termios.h>
-#include <time.h>
+#include <ctime>
 #include <unistd.h>
 
 #include "common/defs.h"
@@ -44,6 +43,13 @@ using namespace common;
 #ifdef USE_READLINE
 const string HISTORY_FILE            = string(getenv("HOME")) + "/.miniob.history";
 time_t       last_history_write_time = 0;
+
+char *my_test(const char *proto)
+{
+  int size = 0;
+  cout << size << endl;
+  return nullptr;
+}
 
 char *my_readline(const char *prompt)
 {
@@ -161,7 +167,8 @@ int main(int argc, char *argv[])
   printf("%s", startup_tips);
 
   const char  *unix_socket_path = nullptr;
-  const char  *server_host      = "127.0.0.1";
+  // const char  *server_host      = "127.0.0.1";
+  const char  *server_host      = "172.17.0.3";
   int          server_port      = PORT_DEFAULT;
   int          opt;
   extern char *optarg;
@@ -186,10 +193,9 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  char send_buf[MAX_MEM_BUFFER_SIZE];
-
   char *input_command = nullptr;
   while ((input_command = my_readline(prompt_str)) != nullptr) {
+    char send_buf[MAX_MEM_BUFFER_SIZE];
     if (common::is_blank(input_command)) {
       free(input_command);
       input_command = nullptr;
